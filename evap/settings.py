@@ -80,6 +80,10 @@ GRADE_REMINDER_EMAIL_DATES = [
 # figure out who is an internal user
 INSTITUTION_EMAIL_DOMAINS: list[str] = ["institution.example.com", "student.institution.example.com"]
 
+# Handles automatic email updates during OIDC login when subdomain of the user's
+# email changes and merges the accounts
+AUTO_UPDATE_EMAIL_DOMAINS: list[str] = ["institution.example.com", "student.institution.example.com"]
+
 # List of tuples defining email domains that should be replaced on saving UserProfiles.
 # Emails ending on the first value will have this part replaced by the second value.
 # e.g.: [("institution.example.com", "institution.com")]
