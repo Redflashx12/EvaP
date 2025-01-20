@@ -2,6 +2,7 @@ import inspect
 from collections.abc import Callable
 from functools import wraps
 
+from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
 from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
@@ -131,6 +132,16 @@ def reward_user_required(user):
     return can_reward_points_be_used_by(user)
 
 
+def check_existing_accounts(email):
+    for old_domain, new_domain in settings.AUTO_UPDATE_EMAIL_DOMAINS:
+        if email.endswith(new_domain) and not email.endswith(old_domain):
+            email = email[: -len(new_domain)] + old_domain
+
+    if UserProfile.objects.filter(email=email).exists():
+        # TODO: merge account
+        pass
+
+
 # see https://mozilla-django-oidc.readthedocs.io/en/stable/
 class OpenIDAuthenticationBackend(OIDCAuthenticationBackend):
     def filter_users_by_claims(self, claims):
@@ -146,6 +157,7 @@ class OpenIDAuthenticationBackend(OIDCAuthenticationBackend):
 
     def create_user(self, claims):
         assert openid_login_is_active()
+        check_existing_accounts(claims.get("email"))
         return self.UserModel.objects.create(
             email=claims.get("email"),
             first_name_given=claims.get("given_name", ""),

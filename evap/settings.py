@@ -82,7 +82,7 @@ INSTITUTION_EMAIL_DOMAINS: list[str] = ["institution.example.com", "student.inst
 
 # Handles automatic email updates during OIDC login when subdomain of the user's
 # email changes and merges the accounts
-AUTO_UPDATE_EMAIL_DOMAINS: list[str] = ["institution.example.com", "student.institution.example.com"]
+AUTO_UPDATE_EMAIL_DOMAINS: list[tuple[str, str]] = [("student.institution.com", "institution.com")]
 
 # List of tuples defining email domains that should be replaced on saving UserProfiles.
 # Emails ending on the first value will have this part replaced by the second value.
